@@ -10,11 +10,11 @@ public record DepartmentIdentifier
     private const int MAX_LENGTH_VALUE = 150;
     private static readonly Regex _pattern = new("^[a-zA-Z]+$", RegexOptions.Compiled);
 
-    public string Value { get; }
+    public string Identifier { get; }
 
     private DepartmentIdentifier(string value)
     {
-        Value = value;
+        Identifier = value;
     }
 
     public static Result<DepartmentIdentifier, Error> Create(string value)

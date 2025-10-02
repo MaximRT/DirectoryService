@@ -19,6 +19,8 @@ public class Department
 
     public Guid? ParentId { get; private set; }
 
+    public Department? Parent { get; private set; }
+
     public DepartmentPath Path { get; private set; }
 
     public int Depth { get; private set; }
