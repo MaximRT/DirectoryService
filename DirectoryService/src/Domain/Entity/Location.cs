@@ -6,11 +6,15 @@ namespace Domain.Entity;
 
 public class Location
 {
-    public Guid Id { get; private set; }
+    private List<DepartmentLocation> _departmentLocations = [];
+
+    private List<LocationAddress> _locationAddresses = [];
+
+    public Guid LocationId { get; private set; }
 
     public LocationName Name { get; private set; }
 
-    public LocationAddress Address { get; private set; }
+    public IReadOnlyList<LocationAddress> Addresses => _locationAddresses;
 
     public LocationTimezone Timezone { get; private set; }
 
@@ -20,13 +24,15 @@ public class Location
 
     public DateTime UpdatedAt { get; private set; }
 
+    public IReadOnlyList<DepartmentLocation> DepartmentLocations => _departmentLocations;
+
     private Location() {}
 
     private Location(LocationName name, LocationAddress address, LocationTimezone timezone, bool isActive)
     {
-        Id = Guid.NewGuid();
+        LocationId = Guid.NewGuid();
         Name = name;
-        Address = address;
+        _locationAddresses.Add(address);
         Timezone = timezone;
         IsActive = isActive;
         CreatedAt = DateTime.UtcNow;

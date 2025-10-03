@@ -9,7 +9,9 @@ public class Position
     private const int MAX_LENGTH_NAME = 100;
     private const int MAX_LENGTH_DESCRIPTION = 1000;
 
-    public Guid Id { get; private set; }
+    private List<DepartmentPosition> _departmentPositions = [];
+
+    public Guid PositionId { get; private set; }
 
     public string Name { get; private set; }
 
@@ -21,11 +23,13 @@ public class Position
 
     public DateTime UpdatedAt { get; private set; }
 
+    public IReadOnlyList<DepartmentPosition> DepartmentPositions => _departmentPositions;
+
     private Position() { }
 
     private Position(string name, string? description, bool isActive)
     {
-        Id = Guid.NewGuid();
+        PositionId = Guid.NewGuid();
         Name = name!;
         Description = description;
         IsActive = isActive;

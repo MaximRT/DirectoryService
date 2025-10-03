@@ -5,7 +5,7 @@ namespace Domain.Entity;
 
 public class DepartmentLocation
 {
-    public Guid Id { get; private set; }
+    public Guid DepartmentLocationId { get; private set; }
 
     public Department Department { get; private set; }
 
@@ -15,7 +15,7 @@ public class DepartmentLocation
 
     private DepartmentLocation(Department department, Guid locationId)
     {
-        Id = Guid.NewGuid();
+        DepartmentLocationId = Guid.NewGuid();
         Department = department;
         LocationId = locationId;
     }

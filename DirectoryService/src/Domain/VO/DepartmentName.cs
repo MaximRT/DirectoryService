@@ -8,11 +8,11 @@ public record DepartmentName
     private const int MIN_LENGTH_VALUE = 3;
     private const int MAX_LENGTH_VALUE = 150;
 
-    public string Value { get; }
+    public string Name { get; }
 
     private DepartmentName(string value)
     {
-        Value = value;
+        Name = value;
     }
 
     public static Result<DepartmentName, Error> Create(string value)

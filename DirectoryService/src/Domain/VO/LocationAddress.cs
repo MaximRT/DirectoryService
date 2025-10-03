@@ -5,8 +5,6 @@ namespace Domain.VO;
 
 public record LocationAddress
 {
-    private const int MAX_LENGTH = 200;
-
     public string Country { get; }
     public string Region { get; }
     public string City { get; }
@@ -82,7 +80,7 @@ public record LocationAddress
         }
 
         if (new[] { trimmedCountry, trimmedCity, trimmedStreet, trimmedHouse }
-            .Any(x => x!.Length > MAX_LENGTH))
+            .Any(x => x!.Length > ProjectsConsts.MaxLenght200))
         {
             return Error.Validation(
                 null,

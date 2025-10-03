@@ -6,11 +6,11 @@ namespace Domain.VO;
 public record DepartmentPath
 {
     private const int MAX_LENGTH_VALUE = 200;
-    public string Value { get; }
+    public string Path { get; }
 
     private DepartmentPath(string value)
     {
-        Value = value;
+        Path = value;
     }
 
     public static Result<DepartmentPath, Error> Create(string value)
