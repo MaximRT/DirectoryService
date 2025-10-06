@@ -1,3 +1,4 @@
+using Application.DependencyInjection;
 using Infrastructure.Postgres.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddInfrastructurePostgres(builder.Configuration);
+builder.Services.AddApplicationDependencies();
 
 var app = builder.Build();
 
