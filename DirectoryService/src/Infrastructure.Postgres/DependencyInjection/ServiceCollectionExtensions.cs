@@ -1,4 +1,6 @@
+using Application.Locations;
 using Infrastructure.Postgres.Data;
+using Infrastructure.Postgres.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +13,8 @@ public static class ServiceCollectionExtensions
     {
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DirectoryServiceDB")));
+
+        services.AddScoped<ILocationRepository, LocationRepository>();
 
         return services;
     }
