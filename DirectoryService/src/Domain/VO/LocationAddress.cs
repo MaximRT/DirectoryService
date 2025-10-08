@@ -28,7 +28,7 @@ public record LocationAddress
         Apartment = apartment;
     }
 
-    public static Result<LocationAddress, Error> Create(
+    public static Result<LocationAddress, Errors> Create(
         string country,
         string region,
         string city,
@@ -43,53 +43,17 @@ public record LocationAddress
         var trimmedHouse = house?.Trim();
         var trimmedApartment = apartment?.Trim();
 
-        if (string.IsNullOrWhiteSpace(trimmedCountry))
+        if (string.IsNullOrWhiteSpace(trimmedCountry)
+            || string.IsNullOrWhiteSpace(trimmedCity)
+            || string.IsNullOrWhiteSpace(trimmedStreet)
+            || string.IsNullOrWhiteSpace(trimmedHouse)
+            || new[] { trimmedCountry, trimmedCity, trimmedStreet, trimmedHouse }
+                .Any(x => x!.Length > ProjectsConsts.MaxLenght200))
         {
-            return Error.Validation(
-                null,
-                "Address.Country cannot be empty.",
-                Status.VALIDATION,
-                null);
+            return GeneralErrors.ValueIsInvalid().ToErrors();
         }
 
-        if (string.IsNullOrWhiteSpace(trimmedCity))
-        {
-            return Error.Validation(
-                null,
-                "Address.City cannot be empty.",
-                Status.VALIDATION,
-                null);
-        }
-
-        if (string.IsNullOrWhiteSpace(trimmedStreet))
-        {
-            return Error.Validation(
-                null,
-                "Address.Street cannot be empty.",
-                Status.VALIDATION,
-                null);
-        }
-
-        if (string.IsNullOrWhiteSpace(trimmedHouse))
-        {
-            return Error.Validation(
-                null,
-                "Address.House cannot be empty.",
-                Status.VALIDATION,
-                null);
-        }
-
-        if (new[] { trimmedCountry, trimmedCity, trimmedStreet, trimmedHouse }
-            .Any(x => x!.Length > ProjectsConsts.MaxLenght200))
-        {
-            return Error.Validation(
-                null,
-                "Some required address fields are too long.",
-                Status.VALIDATION,
-                null);
-        }
-
-        return Result.Success<LocationAddress, Error>(
+        return Result.Success<LocationAddress, Errors>(
             new LocationAddress(
                 trimmedCountry!,
                 trimmedRegion ?? string.Empty,

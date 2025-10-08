@@ -17,37 +17,20 @@ public record DepartmentIdentifier
         Identifier = value;
     }
 
-    public static Result<DepartmentIdentifier, Error> Create(string value)
+    public static Result<DepartmentIdentifier, Errors> Create(string value)
     {
         var trimmedValue = value?.Trim();
 
-        if (string.IsNullOrWhiteSpace(trimmedValue))
+        if (string.IsNullOrWhiteSpace(trimmedValue) || trimmedValue.Length < MIN_LENGTH_VALUE || trimmedValue.Length > MAX_LENGTH_VALUE)
         {
-            return Error.Validation(
-                null,
-                "DepartmentIdentifier.Value cannot be empty",
-                Status.VALIDATION,
-                null);
-        }
-
-        if (trimmedValue.Length < MIN_LENGTH_VALUE || trimmedValue.Length > MAX_LENGTH_VALUE)
-        {
-            return Error.Validation(
-                null,
-                $"DepartmentIdentifier.Value should be >= {MIN_LENGTH_VALUE} and <= {MAX_LENGTH_VALUE}",
-                Status.VALIDATION,
-                null);
+            return GeneralErrors.ValueIsInvalid().ToErrors();
         }
 
         if (!_pattern.IsMatch(trimmedValue))
         {
-            return Error.Validation(
-                null,
-                "DepartmentIdentifier.Value must consist only latin letters",
-                Status.VALIDATION,
-                null);
+            return GeneralErrors.ValueIsInvalid().ToErrors();
         }
 
-        return Result.Success<DepartmentIdentifier, Error>(new DepartmentIdentifier(trimmedValue));
+        return Result.Success<DepartmentIdentifier, Errors>(new DepartmentIdentifier(trimmedValue));
     }
 };

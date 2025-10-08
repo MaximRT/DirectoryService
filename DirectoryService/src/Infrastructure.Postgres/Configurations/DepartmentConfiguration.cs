@@ -61,7 +61,7 @@ public class DepartmentConfiguration : IEntityTypeConfiguration<Department>
             .WithOne(x => x.Parent)
             .IsRequired(false)
             .HasForeignKey(x => x.ParentId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(d => d.DepartmentLocations)
             .WithOne(d => d.Department)

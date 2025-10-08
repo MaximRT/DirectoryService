@@ -2,38 +2,37 @@
 
 public class Error
 {
-    public static Error None = new Error(null, null, Shared.Status.NONE, null);
+    public static Error None = new Error(null, null, Shared.ErrorType.NONE, null);
 
     public string? Code { get; set; }
 
     public string? Message { get; set; }
 
-    public Status Status { get; set; }
+    public ErrorType Type { get; set; }
 
     public string? InvalidField { get; set; }
 
-    private Error(string? code, string? message, Status status, string? invalidField)
+    private Error(string? code, string? message, ErrorType status, string? invalidField = null)
     {
         Code = code;
         Message = message;
-        Status = status;
+        Type = status;
         InvalidField = invalidField;
     }
 
-    public static Error Validation(string? code, string? message, Status status, string? invalidField) =>
-        new (code ?? "value.is.invalid", message, status, invalidField);
+    public static Error Validation(string code, string message, string? invalidField = null) =>
+        new (code, message, ErrorType.VALIDATION, invalidField);
 
-    public static Error NotFound(string? code, string? message, Status status) =>
-        new (code ?? "value.is.notfound", message, status, null);
+    public static Error NotFound(string code, string message) => new (code, message, ErrorType.NOT_FOUND);
 
-    public static Error Failure(string? code, string? message, Status status) =>
-        new (code ?? "failure.on.server", message, status, null);
+    public static Error Failure(string code, string message) => new (code, message,  ErrorType.FAILURE);
 
-    public static Error Conflict(string? code, string? message, Status status) =>
-        new (code ?? "value.is.conflict", message, status, null);
+    public static Error Conflict(string code, string message) => new (code, message,  ErrorType.CONFLICT);
+
+    public Errors ToErrors() => new([this]);
 }
 
-public enum Status
+public enum ErrorType
 {
     /// <summary>
     /// Ошибка отсутствует
