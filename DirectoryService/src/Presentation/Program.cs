@@ -1,6 +1,8 @@
 using Application.DependencyInjection;
 using Infrastructure.Postgres.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Presentation.Extentions;
+using Serilog;
 using Shared;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,10 +28,19 @@ builder.Services.AddOpenApi(options =>
     });
 });
 
+builder.Host.UseSerilog((ctx, lc) =>
+{
+    lc.ReadFrom.Configuration(ctx.Configuration)
+        .Enrich.FromLogContext();
+});
+
 builder.Services.AddInfrastructurePostgres(builder.Configuration);
 builder.Services.AddApplicationDependencies();
 
 var app = builder.Build();
+
+app.UseExceptionMiddleware();
+app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())
 {

@@ -2,6 +2,7 @@
 using CSharpFunctionalExtensions;
 using Domain.Entity;
 using Domain.VO;
+using Microsoft.Extensions.Logging;
 using Shared;
 
 namespace Application.Locations.CreateLocation
@@ -9,10 +10,14 @@ namespace Application.Locations.CreateLocation
     public class CreateLocationHandler : ICommandHandler<Guid, CreateLocationCommand>
     {
         private readonly ILocationRepository _locationRepository;
+        private readonly ILogger<CreateLocationHandler> _logger;
 
-        public CreateLocationHandler(ILocationRepository locationRepository)
+        public CreateLocationHandler(
+            ILocationRepository locationRepository,
+            ILogger<CreateLocationHandler> logger)
         {
             _locationRepository = locationRepository;
+            _logger = logger;
         }
 
         public async Task<Result<Guid, Errors>> Handle(
@@ -48,6 +53,8 @@ namespace Application.Locations.CreateLocation
             var resultCreate = await _locationRepository.CreateAsync(resultLocation.Value, cancellationToken);
 
             if (resultCreate.IsFailure) return GeneralErrors.Failure().ToErrors();
+
+            _logger.LogInformation("Локация успешно создалась с id - {Id}", resultCreate.Value);
 
             return resultCreate.Value;
         }
