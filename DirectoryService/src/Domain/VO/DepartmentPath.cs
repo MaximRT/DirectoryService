@@ -13,28 +13,15 @@ public record DepartmentPath
         Path = value;
     }
 
-    public static Result<DepartmentPath, Error> Create(string value)
+    public static Result<DepartmentPath, Errors> Create(string value)
     {
         var trimmedValue = value?.Trim();
 
-        if (string.IsNullOrWhiteSpace(trimmedValue))
+        if (string.IsNullOrWhiteSpace(trimmedValue) || trimmedValue.Length > MAX_LENGTH_VALUE)
         {
-            return Error.Validation(
-                null,
-                "DepartmentPath.Value cannot be empty.",
-                Status.VALIDATION,
-                null);
+            return GeneralErrors.ValueIsInvalid().ToErrors();
         }
 
-        if (trimmedValue.Length > MAX_LENGTH_VALUE)
-        {
-            return Error.Validation(
-                null,
-                "DepartmentPath.Value is too long.",
-                Status.VALIDATION,
-                null);
-        }
-
-        return Result.Success<DepartmentPath, Error>(new DepartmentPath(trimmedValue));
+        return Result.Success<DepartmentPath, Errors>(new DepartmentPath(trimmedValue));
     }
 };

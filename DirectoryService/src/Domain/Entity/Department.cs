@@ -66,7 +66,7 @@ public class Department
         UpdatedAt = DateTime.UtcNow;
     }
 
-    public UnitResult<Error> Rename(string newName)
+    public UnitResult<Errors> Rename(string newName)
     {
         var result = DepartmentName.Create(newName);
 
@@ -75,10 +75,10 @@ public class Department
 
         Name = result.Value;
 
-        return UnitResult.Success<Error>();
+        return UnitResult.Success<Errors>();
     }
 
-    public static Result<Department, Error> Create(
+    public static Result<Department, Errors> Create(
         DepartmentName name,
         DepartmentIdentifier identifier,
         DepartmentPath path,
@@ -88,13 +88,9 @@ public class Department
     {
         if (depth < MIN_VALUE_DEPTH)
         {
-            return Error.Validation(
-                    null,
-                    $"Department.Depth cannot be less than {MIN_VALUE_DEPTH}.",
-                    Status.VALIDATION,
-                    null);
+            return GeneralErrors.ValueIsInvalid().ToErrors();
         }
 
-        return Result.Success<Department, Error>(new Department(name, identifier, path, depth, isActive, departmentLocations));
+        return Result.Success<Department, Errors>(new Department(name, identifier, path, depth, isActive, departmentLocations));
     }
 }

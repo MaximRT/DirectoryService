@@ -37,38 +37,19 @@ public class Position
         UpdatedAt = CreatedAt;
     }
 
-    public static Result<Position, Error> Create(string name, string? description, bool isActive)
+    public static Result<Position, Errors> Create(string name, string? description, bool isActive)
     {
         var trimmedName = name.Trim();
         var trimmedDescription = description?.Trim();
 
-        if (string.IsNullOrWhiteSpace(trimmedName))
+        if (string.IsNullOrWhiteSpace(trimmedName)
+            || trimmedName.Length < MIN_LENGTH_NAME
+            || trimmedName.Length > MAX_LENGTH_NAME
+            || trimmedDescription?.Length > MAX_LENGTH_DESCRIPTION)
         {
-            return Error.Validation(
-                null,
-                "Position name cannot be null or whitespace.",
-                Status.VALIDATION,
-                null);
+            return GeneralErrors.ValueIsInvalid().ToErrors();
         }
 
-        if (trimmedName.Length < MIN_LENGTH_NAME || trimmedName.Length > MAX_LENGTH_NAME)
-        {
-            return Error.Validation(
-                    null,
-                    $"Position name should be >= {MIN_LENGTH_NAME} and <= {MAX_LENGTH_NAME}",
-                    Status.VALIDATION,
-                    null);
-        }
-
-        if (trimmedDescription?.Length > MAX_LENGTH_DESCRIPTION)
-        {
-            return Error.Validation(
-                null,
-                $"Position description should be <= {MAX_LENGTH_DESCRIPTION}",
-                Status.VALIDATION,
-                null);
-        }
-
-        return Result.Success<Position, Error>(new Position(trimmedName, trimmedDescription, isActive));
+        return Result.Success<Position, Errors>(new Position(trimmedName, trimmedDescription, isActive));
     }
 }

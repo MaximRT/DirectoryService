@@ -6,5 +6,5 @@ namespace Application.Locations;
 
 public interface ILocationRepository
 {
-    Task<Result<Guid, Error>> CreateAsync(Location location, CancellationToken cancellationToken = default);
+    Task<Result<Guid, Errors>> CreateAsync(Location location, CancellationToken cancellationToken = default);
 }

@@ -15,7 +15,7 @@ public class LocationRepository : ILocationRepository
         _context = context;
     }
 
-    public async Task<Result<Guid, Error>> CreateAsync(Location location, CancellationToken cancellationToken = default)
+    public async Task<Result<Guid, Errors>> CreateAsync(Location location, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -25,7 +25,7 @@ public class LocationRepository : ILocationRepository
         }
         catch (Exception ex)
         {
-            return Error.Failure(null, ex.Message, Status.FAILURE);
+            return GeneralErrors.Failure().ToErrors();
         }
     }
 }

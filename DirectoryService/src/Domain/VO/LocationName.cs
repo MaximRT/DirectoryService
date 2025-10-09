@@ -14,28 +14,15 @@ public record LocationName
         Name = value;
     }
 
-    public static Result<LocationName, Error> Create(string value)
+    public static Result<LocationName, Errors> Create(string value)
     {
         var trimmedValue = value?.Trim();
 
-        if (string.IsNullOrWhiteSpace(trimmedValue))
+        if (string.IsNullOrWhiteSpace(trimmedValue) || trimmedValue.Length < MIN_LENGTH_VALUE || trimmedValue.Length > MAX_LENGTH_VALUE)
         {
-            return Error.Validation(
-                null,
-                "LocationName.Value cannot be empty.",
-                Status.VALIDATION,
-                null);
+            return GeneralErrors.ValueIsInvalid().ToErrors();
         }
 
-        if (trimmedValue.Length < MIN_LENGTH_VALUE || trimmedValue.Length > MAX_LENGTH_VALUE)
-        {
-            return Error.Validation(
-                null,
-                $"LocationName.Value should be >= {MIN_LENGTH_VALUE} and <= {MAX_LENGTH_VALUE}",
-                Status.VALIDATION,
-                null);
-        }
-
-        return Result.Success<LocationName, Error>(new LocationName(trimmedValue));
+        return Result.Success<LocationName, Errors>(new LocationName(trimmedValue));
     }
 }

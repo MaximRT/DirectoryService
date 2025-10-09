@@ -15,13 +15,13 @@ namespace Application.Locations.CreateLocation
             _locationRepository = locationRepository;
         }
 
-        public async Task<Result<Guid, Error[]>> Handle(
+        public async Task<Result<Guid, Errors>> Handle(
             CreateLocationCommand command,
             CancellationToken cancellationToken)
         {
             var resultName = LocationName.Create(command.Name);
 
-            if (resultName.IsFailure) return new Error[] { resultName.Error };
+            if (resultName.IsFailure) return GeneralErrors.Failure().ToErrors();
 
             var resultAddress = LocationAddress.Create(
                 command.Address.Country,
@@ -31,11 +31,11 @@ namespace Application.Locations.CreateLocation
                 command.Address.House,
                 command.Address.Apartment);
 
-            if (resultAddress.IsFailure) return new Error[] { resultName.Error };
+            if (resultAddress.IsFailure) return GeneralErrors.Failure().ToErrors();
 
             var resultTimezone = LocationTimezone.Create(command.Timezone.IanaCode);
 
-            if (resultTimezone.IsFailure) return new Error[] { resultName.Error };
+            if (resultTimezone.IsFailure) return GeneralErrors.Failure().ToErrors();
 
             var resultLocation = Location.Create(
                 resultName.Value,
@@ -43,11 +43,11 @@ namespace Application.Locations.CreateLocation
                 resultTimezone.Value,
                 command.IsActive);
 
-            if (resultLocation.IsFailure) return new Error[] { resultName.Error };
+            if (resultLocation.IsFailure) return GeneralErrors.Failure().ToErrors();
 
             var resultCreate = await _locationRepository.CreateAsync(resultLocation.Value, cancellationToken);
 
-            if (resultCreate.IsFailure) return new Error[] { resultName.Error };
+            if (resultCreate.IsFailure) return GeneralErrors.Failure().ToErrors();
 
             return resultCreate.Value;
         }
